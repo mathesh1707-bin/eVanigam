@@ -61,4 +61,4 @@ jwt.secret=your_secret_key
 
 ## 👨‍💻 Author
 
-Mathesh Subramanian
+Mathesh S
