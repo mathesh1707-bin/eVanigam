@@ -37,24 +37,6 @@ eVanigam is a full-stack e-commerce web application built to provide a seamless 
 - JWT Authentication
 - Role-Based Authorization
 
-## 📂 Project Structure
-
-```bash
-eVanigam/
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│
-├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   ├── models/
-│   ├── middleware/
-│
-├── README.md
-```
-
 ## ⚙️ Installation
 
 ### Clone the Repository
