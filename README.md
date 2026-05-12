@@ -48,7 +48,7 @@ Create an `application.properties` file:
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/evanigam
 spring.datasource.username=root
-spring.datasource.password=your_password
+spring.datasource.password=YOUR-PASSWORD
 jwt.secret=your_secret_key
 ```
 
