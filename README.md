@@ -1,39 +1,49 @@
 # eVanigam
 
-A modern full-stack e-commerce web application built with React, Spring Boot, and MySQL featuring authentication, product management, cart functionality, and order tracking.
+A modern full-stack e-commerce web application built using React, Spring Boot, and MySQL.
 
-## 🚀 Features
+## 🚀 Current Features
 
-- User Authentication
-- Role-Based Access (Admin/User)
-- Product Catalog
-- Add to Cart
-- Order Management
-- REST API Integration
-- Responsive UI
+- React Frontend Setup
+- Multi-Page Routing
+- Responsive Navbar
+- Product Card UI
+- Home, Products, Cart & Login Pages
+- Scalable Folder Structure
 
 ## 🛠️ Tech Stack
 
-**Frontend:** React.js, CSS, JavaScript  
-**Backend:** Spring Boot, Java  
-**Database:** MySQL  
-**Authentication:** JWT
-
-## ⚙️ Installation
-
-```bash
-git clone <repo-link>
-cd eVanigam
-```
+### Frontend
+- React.js
+- React Router DOM
+- CSS3
+- JavaScript
 
 ### Backend
+- Spring Boot
+- Java
+
+### Database
+- MySQL
+
+## 📂 Project Structure
 
 ```bash
-cd backend
-./mvnw spring-boot:run
+eVanigam/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│
+├── backend/
+│
+└── README.md
 ```
 
-### Frontend
+## ⚙️ Frontend Setup
 
 ```bash
 cd frontend
@@ -41,23 +51,14 @@ npm install
 npm run dev
 ```
 
-## 🔐 Environment Variables
+## 📌 Upcoming Features
 
-Create an `application.properties` file:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/evanigam
-spring.datasource.username=root
-spring.datasource.password=your_password
-jwt.secret=your_secret_key
-```
-
-## 📌 Future Enhancements
-
-- Online Payments
-- Wishlist
-- Product Reviews
-- Analytics Dashboard
+- Authentication System
+- Product Management
+- Shopping Cart Logic
+- Backend API Integration
+- Order Tracking
+- Admin Dashboard
 
 ## 👨‍💻 Author
 
