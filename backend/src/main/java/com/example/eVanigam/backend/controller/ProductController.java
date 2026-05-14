@@ -8,20 +8,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.eVanigam.backend.model.Product;
 import com.example.eVanigam.backend.service.ProductService;
 
-@RestController("/product")
+@RestController
+@RequestMapping("/products")
 public class ProductController {
     private ProductService service;
-
+    
     public ProductController (ProductService service){
         this.service=service;
     }
     @PostMapping
-    public Product addProduct(Product product) {
+    public Product addProduct(@RequestBody Product product) {
         return service.addProduct(product);
     }
     @GetMapping
