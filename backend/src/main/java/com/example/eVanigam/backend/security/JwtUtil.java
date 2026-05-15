@@ -16,10 +16,33 @@ public class JwtUtil {
 
     public String generateToken(String email) {
         return Jwts.builder().setSubject(email)
-        .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
-        .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .compact();
 
+    }
+    
+    public String extractEmail(String token) {
+
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } 
+        catch (Exception e) {
+        return false;
+        }
     }
 }
