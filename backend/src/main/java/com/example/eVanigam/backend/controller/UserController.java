@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.eVanigam.backend.dto.LoginRequest;
 import com.example.eVanigam.backend.model.User;
 import com.example.eVanigam.backend.service.UserService;
 
@@ -27,6 +28,11 @@ public class UserController {
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
         return service.addUser(user);
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody LoginRequest request) {
+        return service.loginUser(request);
     }
 
     @GetMapping
