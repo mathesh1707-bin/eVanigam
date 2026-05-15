@@ -7,17 +7,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.eVanigam.backend.dto.LoginRequest;
+import com.example.eVanigam.backend.dto.LoginResponse;
 import com.example.eVanigam.backend.model.User;
 import com.example.eVanigam.backend.repository.UserRepository;
+import com.example.eVanigam.backend.security.JwtUtil;
 
 @Service
 public class UserService {
     private UserRepository repo;
     private PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository repo,PasswordEncoder passwordEncoder) {
+    private JwtUtil jwtUtil;
+    
+    public UserService(UserRepository repo,PasswordEncoder passwordEncoder,JwtUtil jwtUtil) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
     //Register
     public User addUser(User user) {
@@ -26,17 +30,17 @@ public class UserService {
     }
 
     //Login
-    public String loginUser(LoginRequest request) { 
+    public LoginResponse loginUser(LoginRequest request) {
         Optional<User> user = repo.findByEmail(request.getEmail());
         if (user.isEmpty()) {
-            return "User not found!";
+            return new LoginResponse("User not found!",null,null);
         }
         User existingUser = user.get();
         boolean isMatch = passwordEncoder.matches(request.getPassword(), existingUser.getPassword());
         if (isMatch) {
-            return "Login successful!";
+            return new LoginResponse("Login successful!", existingUser,jwtUtil.generateToken(request.getEmail()));
         }
-        return "Invalid Password";
+        return new LoginResponse("Invalid Password",null,null);
         
     }
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.eVanigam.backend.dto.LoginRequest;
+import com.example.eVanigam.backend.dto.LoginResponse;
 import com.example.eVanigam.backend.model.User;
 import com.example.eVanigam.backend.service.UserService;
 
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody LoginRequest request) {
+    public LoginResponse loginUser(@RequestBody LoginRequest request) {
         return service.loginUser(request);
     }
 
@@ -50,7 +51,7 @@ public class UserController {
         return service.updateUser(userId, user);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
         service.deleteUser(userId);
     }
