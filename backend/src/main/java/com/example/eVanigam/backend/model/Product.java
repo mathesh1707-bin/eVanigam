@@ -15,13 +15,13 @@ public class Product {
     private String description;
     private double price;
     private String imageUrl;
-    private double stock;
+    private int stock;
     private String category;
 
     public Product() {
     }
 
-    public Product(Long id,String name, String description, double price, String imageUrl, double stock, String category) {
+    public Product(Long id,String name, String description, double price, String imageUrl, int stock, String category) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -49,7 +49,7 @@ public class Product {
         return category;
     }
 
-    public double getStock() {
+    public int getStock() {
         return stock;
     }
 
@@ -73,7 +73,7 @@ public class Product {
         this.category = category;
     }
 
-    public void setStock(double stock) {
+    public void setStock(int stock) {
         this.stock=stock;
     }
 
