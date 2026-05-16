@@ -1,8 +1,8 @@
 package com.example.eVanigam.backend.security;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
-
-import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Component;
 
@@ -12,37 +12,66 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
-    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(String email) {
-        return Jwts.builder().setSubject(email)
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .compact();
+    private final String SECRET =
+            "mysecretkeymysecretkeymysecretkey12345";
 
+    private Key getSignKey() {
+        return Keys.hmacShaKeyFor(
+                SECRET.getBytes(StandardCharsets.UTF_8)
+        );
     }
-    
+
+    public String generateToken(String email,String role) {
+
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role",role)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                        new Date(
+                                System.currentTimeMillis()
+                                        + 1000 * 60 * 60
+                        )
+                )
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String extractEmail(String token) {
 
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
+    public String extractRole(String token) {
+
+    return Jwts.parserBuilder()
+            .setSigningKey(getSignKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .get("role", String.class);
+    }   
+
     public boolean validateToken(String token) {
+
         try {
+
             Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
+                    .setSigningKey(getSignKey())
                     .build()
                     .parseClaimsJws(token);
+
             return true;
-        } 
-        catch (Exception e) {
-        return false;
+
+        } catch (Exception e) {
+
+            return false;
         }
     }
 }

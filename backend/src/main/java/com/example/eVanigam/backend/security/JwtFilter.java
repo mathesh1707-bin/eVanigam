@@ -1,8 +1,10 @@
 package com.example.eVanigam.backend.security;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -51,15 +53,17 @@ public class JwtFilter extends OncePerRequestFilter {
         if(jwtUtil.validateToken(token)) {
 
             // Extract email
-            String email =
-                    jwtUtil.extractEmail(token);
+        String email = jwtUtil.extractEmail(token);
+        String role = jwtUtil.extractRole(token);
+                
+        List<SimpleGrantedAuthority> authorities =List.of(new SimpleGrantedAuthority(role));
 
             // Create authenticated user
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             email,
                             null,
-                            null
+                            authorities
                     );
 
             authToken.setDetails(

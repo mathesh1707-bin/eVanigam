@@ -30,6 +30,8 @@ public class LoginResponse {
         return token;
     }
 
+   
+
     public void setMessage(String message) {
         this.message = message;
     }

@@ -34,11 +34,12 @@ public class UserService {
         Optional<User> user = repo.findByEmail(request.getEmail());
         if (user.isEmpty()) {
             return new LoginResponse("User not found!",null,null);
-        }
+        }  
         User existingUser = user.get();
         boolean isMatch = passwordEncoder.matches(request.getPassword(), existingUser.getPassword());
+        String token = jwtUtil.generateToken(existingUser.getEmail(), existingUser.getRole());
         if (isMatch) {
-            return new LoginResponse("Login successful!", existingUser,jwtUtil.generateToken(request.getEmail()));
+            return new LoginResponse("Login successful!", existingUser,token);
         }
         return new LoginResponse("Invalid Password",null,null);
         

@@ -22,7 +22,7 @@ public class ProductController {
     public ProductController (ProductService service){
         this.service=service;
     }
-    @PostMapping
+    @PostMapping("/add")
     public Product addProduct(@RequestBody Product product) {
         return service.addProduct(product);
     }
@@ -34,11 +34,11 @@ public class ProductController {
     public Product getProductById(@PathVariable Long id) {
         return service.getProductById(id);
     }
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
         return service.updateProduct(id, product);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteProduct(@PathVariable Long id) {
         service.deleteProduct(id);
     }
