@@ -27,47 +27,59 @@ public class CartItemService {
 
     //add item
     public CartItem addItem(Long productId, int quantity) {
-         Authentication authentication =
-            SecurityContextHolder
-                    .getContext()
-                    .getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    String email = authentication.getName();
+        String email = authentication.getName();
 
-    // Find user from DB
-    User user = userRepo.findByEmail(email)
-            .orElseThrow(() ->
-                    new RuntimeException("User not found"));
+        // Find user from DB
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-    // Find product
-    Product product = productRepo.findById(productId)
-            .orElseThrow(() ->
-                    new RuntimeException("Product not found"));
+        // Find product
+        Product product = productRepo.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
 
-    // Create cart item
-    CartItem cartItem = new CartItem();
+        // Create cart item
+        CartItem cartItem = new CartItem();
 
-    cartItem.setUser(user);
-    cartItem.setProduct(product);
-    cartItem.setQuantity(quantity);
-
-    // Save
-    return repo.save(cartItem);
+        cartItem.setUser(user);
+        cartItem.setProduct(product);
+        cartItem.setQuantity(quantity);
+        // Save
+        return repo.save(cartItem);
     }
     
     //delete item
     public void deleteItem(Long cartItemId) {
-        repo.deleteById(cartItemId);
+        Authentication authentication = SecurityContextHolder
+                    .getContext()
+                    .getAuthentication();
+        String email = authentication.getName();
+        CartItem cartItem = repo.findById(cartItemId)
+            .orElseThrow(() ->new RuntimeException("Cart item not found"));
+
+        if (!cartItem.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized delete attempt");
+            }
+        repo.delete(cartItem);
     }
 
     //get items
     public List<CartItem> getItems() {
-        return repo.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        // Find user from DB
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return repo.findByUser(user);
     }
-
+    
     //get item by id
     public CartItem getItemById(Long cartItemId) {
-        return repo.findById(cartItemId).orElseThrow(()->new RuntimeException("Item not found!"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        CartItem cartItem = repo.findById(cartItemId).orElseThrow(() ->new RuntimeException("Cart item not found"));
+        if (!cartItem.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized access");
+        }
+        return cartItem;
     }
 
 }

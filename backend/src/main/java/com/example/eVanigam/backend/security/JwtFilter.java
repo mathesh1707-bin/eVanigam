@@ -29,50 +29,37 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain)
-
             throws ServletException, IOException {
 
-        // Read Authorization header
-        String authHeader =
-                request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        // Check whether token exists
-        if(authHeader == null ||
-                !authHeader.startsWith("Bearer ")) {
+        System.out.println("=== JWT FILTER ===");
+        System.out.println("Path: " + request.getRequestURI());
+        System.out.println("Auth Header: " + authHeader);
 
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("No Bearer token — skipping auth");
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Remove "Bearer "
-        String token =
-                authHeader.substring(7);
+        String token = authHeader.substring(7);
 
-        // Validate token
-        if(jwtUtil.validateToken(token)) {
+        if (jwtUtil.validateToken(token)) {
+            String email = jwtUtil.extractEmail(token);
+            String role = jwtUtil.extractRole(token);
 
-            // Extract email
-        String email = jwtUtil.extractEmail(token);
-        String role = jwtUtil.extractRole(token);
-                
-        List<SimpleGrantedAuthority> authorities =List.of(new SimpleGrantedAuthority(role));
+            System.out.println("Token VALID — Email: " + email + " | Role: " + role);
 
-            // Create authenticated user
+            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            email,
-                            null,
-                            authorities
-                    );
+                    new UsernamePasswordAuthenticationToken(email, null, authorities);
 
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource()
-                            .buildDetails(request)
-            );
-
-            // Tell Spring user is authenticated
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authToken);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        } else {
+            System.out.println("Token INVALID or EXPIRED");
         }
 
         filterChain.doFilter(request, response);
