@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import './Auth.css'
 
 const API = 'http://localhost:8080'
 
-export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '' })
+export default function Register() {
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'USER' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -17,15 +15,13 @@ export default function Login() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch(`${API}/users/login`, {
+      const res = await fetch(`${API}/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       })
-      if (!res.ok) throw new Error('Invalid credentials')
-      const data = await res.json()
-      login({ name: data.name, role: data.role, email: form.email }, data.token)
-      navigate(data.role === 'ADMIN' ? '/admin' : '/')
+      if (!res.ok) throw new Error('Registration failed. Email may already be in use.')
+      navigate('/login')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -41,12 +37,22 @@ export default function Login() {
             <span className="logo-e">e</span>Vanigam
           </Link>
         </div>
-        <h1 className="auth-title">Welcome back</h1>
-        <p className="auth-sub">Sign in to your account to continue</p>
+        <h1 className="auth-title">Create account</h1>
+        <p className="auth-sub">Join eVanigam and start shopping</p>
 
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
+          <div className="field">
+            <label>Full Name</label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })}
+              required
+            />
+          </div>
           <div className="field">
             <label>Email</label>
             <input
@@ -61,19 +67,19 @@ export default function Login() {
             <label>Password</label>
             <input
               type="password"
-              placeholder="••••••••"
+              placeholder="Min. 8 characters"
               value={form.password}
               onChange={e => setForm({ ...form, password: e.target.value })}
               required
             />
           </div>
           <button type="submit" className="btn-primary auth-submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
         <p className="auth-switch">
-          Don't have an account? <Link to="/register">Create one</Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </div>
     </main>
