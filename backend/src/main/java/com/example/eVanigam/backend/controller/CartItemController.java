@@ -38,9 +38,18 @@ public class CartItemController {
         return service.getItemById(cartItemId);
     }
 
-    
+    @PostMapping("/update/{cartItemId}")
+    public CartItem updateQuantity(@PathVariable Long cartItemId,@RequestParam int quantity) {
+        return service.updateQuantity(cartItemId, quantity);
+    }
+
     @DeleteMapping("/{cartItemId}")
     public void deleteCartItem(@PathVariable Long cartItemId) {
         service.deleteItem(cartItemId);
+    }
+
+    @GetMapping("/total")
+    public double getCartTotal() {
+        return service.getCartTotal();
     }
 }
