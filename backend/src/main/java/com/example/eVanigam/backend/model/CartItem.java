@@ -11,7 +11,7 @@ public class CartItem {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long cartItemId;
 
     @ManyToOne
     private User user;

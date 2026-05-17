@@ -8,5 +8,4 @@ import com.example.eVanigam.backend.model.CartItem;
 import com.example.eVanigam.backend.model.User;
 
 public interface CartItemRepository extends JpaRepository <CartItem,Long>{
-    Optional<User> findByEmail(String email);
 }
