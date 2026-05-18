@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
     // Public routes first
     .requestMatchers("/users/register", "/users/login").permitAll()
+    .requestMatchers("/orders/**").authenticated()
 
     // Admin-only product mutations
     .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
