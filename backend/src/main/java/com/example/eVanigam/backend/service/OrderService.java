@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.eVanigam.backend.model.CartItem;
-import com.example.eVanigam.backend.model.OrderEntity;
+import com.example.eVanigam.backend.model.Order;
 import com.example.eVanigam.backend.model.OrderItem;
 import com.example.eVanigam.backend.model.Product;
 import com.example.eVanigam.backend.model.User;
@@ -34,7 +34,7 @@ public class OrderService {
         this.userRepo = userRepo;
     }
 
-    public OrderEntity placeOrder() {
+    public Order placeOrder() {
 
         Authentication authentication =
                 SecurityContextHolder
@@ -54,7 +54,7 @@ public class OrderService {
             throw new RuntimeException("Cart is empty");
         }
 
-        OrderEntity order = new OrderEntity();
+        Order order = new Order();
 
         order.setUser(user);
         order.setStatus("PLACED");
@@ -101,7 +101,7 @@ public class OrderService {
         order.setOrderItems(orderItems);
         order.setTotalAmount(total);
 
-        OrderEntity savedOrder =
+        Order savedOrder =
                 orderRepo.save(order);
 
         // Clear cart after successful order
@@ -110,7 +110,7 @@ public class OrderService {
         return savedOrder;
     }
 
-    public List<OrderEntity> getMyOrders() {
+    public List<Order> getMyOrders() {
 
         Authentication authentication =
                 SecurityContextHolder

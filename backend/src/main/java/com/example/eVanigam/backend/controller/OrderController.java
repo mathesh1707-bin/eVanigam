@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.eVanigam.backend.model.OrderEntity;
+import com.example.eVanigam.backend.model.Order;
 import com.example.eVanigam.backend.service.OrderService;
 
 @RestController
@@ -21,12 +21,12 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public OrderEntity placeOrder() {
+    public Order placeOrder() {
         return service.placeOrder();
     }
 
     @GetMapping
-    public List<OrderEntity> getMyOrders() {
+    public List<Order> getMyOrders() {
         return service.getMyOrders();
     }
 }
