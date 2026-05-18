@@ -25,23 +25,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-    // Public routes first
-    .requestMatchers("/users/register", "/users/login").permitAll()
-    .requestMatchers("/orders/**").authenticated()
-
-    // Admin-only product mutations
-    .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
-    .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
-    .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
-
-    // Public product browsing — AFTER admin rules
-    .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-
-    // Cart needs auth — explicit before anyRequest
-    .requestMatchers("/cart/**").authenticated()
-
-    .anyRequest().authenticated()
-)
+                        .requestMatchers("/users/register", "/users/login").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/orders/**").hasRole("ADMIN")
+                        .requestMatchers("/orders/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers("/cart/**").authenticated()
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -51,6 +43,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
-
 }

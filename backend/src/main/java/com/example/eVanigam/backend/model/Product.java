@@ -53,7 +53,7 @@ public class Product {
         return stock;
     }
 
-    public double getprice() {
+    public double getPrice() {
         return price;
     }
 
@@ -77,7 +77,7 @@ public class Product {
         this.stock=stock;
     }
 
-    public void setprice(double price) {
+    public void setPrice(double price) {
         this.price=price;
     }
     

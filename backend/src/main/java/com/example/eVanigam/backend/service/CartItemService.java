@@ -148,7 +148,7 @@ public class CartItemService {
     for (CartItem cartItem : cartItems) {
 
         double itemTotal =
-                cartItem.getProduct().getprice()
+                cartItem.getProduct().getPrice()
                 * cartItem.getQuantity();
 
         total += itemTotal;

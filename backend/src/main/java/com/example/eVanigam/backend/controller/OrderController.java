@@ -3,8 +3,11 @@ package com.example.eVanigam.backend.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.eVanigam.backend.model.Order;
@@ -28,5 +31,15 @@ public class OrderController {
     @GetMapping
     public List<Order> getMyOrders() {
         return service.getMyOrders();
+    }
+
+    @GetMapping("/{orderId}")
+    public Order getOrderById(@PathVariable Long orderId) {
+        return service.getOrderById(orderId);
+    }
+
+    @PutMapping("/{orderId}/status")
+    public Order updateStatus(@PathVariable Long orderId, @RequestParam String status) {
+        return service.updateStatus(orderId, status);
     }
 }
