@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.eVanigam.backend.dto.CartItemDTO;
+import com.example.eVanigam.backend.dto.DtoMapper;
 import com.example.eVanigam.backend.model.CartItem;
 import com.example.eVanigam.backend.service.CartItemService;
 
@@ -25,25 +26,27 @@ public class CartItemController {
     }
 
     @PostMapping("/add/{productId}")
-    public CartItem addCartItem(@PathVariable Long productId,@RequestParam int quantity) {
-        return service.addItem(productId, quantity);
+    public CartItemDTO addCartItem(@PathVariable Long productId, @RequestParam int quantity) {
+        return DtoMapper.toCartItemDTO(service.addItem(productId, quantity));
     }
 
     @GetMapping
-    public List<CartItem> getCartItems() {
-        return service.getItems();
+    public List<CartItemDTO> getCartItems() {
+    return service.getItems()
+            .stream()
+            .map(DtoMapper::toCartItemDTO)
+            .toList();
     }
 
     @GetMapping("/{cartItemId}")
-    public CartItem getCartItemById(@PathVariable Long cartItemId) {
-        return service.getItemById(cartItemId);
+    public CartItemDTO getCartItemById(@PathVariable Long cartItemId) {
+        return DtoMapper.toCartItemDTO(service.getItemById(cartItemId));
     }
 
-    @PutMapping("/update/{cartItemId}")
-    public CartItem updateQuantity(@PathVariable Long cartItemId,@RequestParam int quantity) {
-        return service.updateQuantity(cartItemId, quantity);
+    @PostMapping("/update/{cartItemId}")
+    public CartItemDTO updateQuantity(@PathVariable Long cartItemId, @RequestParam int quantity) {
+        return DtoMapper.toCartItemDTO(service.updateQuantity(cartItemId, quantity));
     }
-
     @DeleteMapping("/{cartItemId}")
     public void deleteCartItem(@PathVariable Long cartItemId) {
         service.deleteItem(cartItemId);

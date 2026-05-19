@@ -34,6 +34,11 @@ public class CartItem {
         return user;
     }
 
+    public Long getCartItemId() {
+        return cartItemId;
+    }
+
+
     public Product getProduct() {
         return product;
     }

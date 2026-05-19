@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.eVanigam.backend.dto.DtoMapper;
+import com.example.eVanigam.backend.dto.ProductDTO;
 import com.example.eVanigam.backend.model.Product;
 import com.example.eVanigam.backend.service.ProductService;
 
@@ -22,21 +24,27 @@ public class ProductController {
     public ProductController (ProductService service){
         this.service=service;
     }
-    @PostMapping("/add")
-    public Product addProduct(@RequestBody Product product) {
-        return service.addProduct(product);
-    }
     @GetMapping
-    public List<Product> getProducts() {
-        return service.getProducts();
+    public List<ProductDTO> getProducts() {
+        return service.getProducts()
+            .stream()
+            .map(DtoMapper::toProductDTO)
+            .toList();
     }
+
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
-        return service.getProductById(id);
+    public ProductDTO getProductById(@PathVariable("id") Long productId) {
+        return DtoMapper.toProductDTO(service.getProductById(productId));
     }
-    @PutMapping("/update/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        return service.updateProduct(id, product);
+
+    @PostMapping
+    public ProductDTO addProduct(@RequestBody Product product) {
+        return DtoMapper.toProductDTO(service.addProduct(product));
+    }
+
+    @PutMapping("/{id}")
+    public ProductDTO updateProduct(@PathVariable("id") Long productId, @RequestBody Product product) {
+        return DtoMapper.toProductDTO(service.updateProduct(productId, product));
     }
     @DeleteMapping("/delete/{id}")
     public void deleteProduct(@PathVariable Long id) {
