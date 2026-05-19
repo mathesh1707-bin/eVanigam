@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.eVanigam.backend.dto.LoginRequest;
 import com.example.eVanigam.backend.dto.LoginResponse;
+import com.example.eVanigam.backend.exception.ApiException;
 import com.example.eVanigam.backend.model.User;
 import com.example.eVanigam.backend.repository.UserRepository;
 import com.example.eVanigam.backend.security.JwtUtil;
@@ -50,11 +51,11 @@ public class UserService {
     }
 
     public User getUserById(Long userId) {
-        return repo.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+        return repo.findById(userId).orElseThrow(() -> new ApiException("User not found!"));
     }
 
     public User updateUser(Long userId, User user) {
-        User existingUser = repo.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+        User existingUser = repo.findById(userId).orElseThrow(() -> new ApiException("User not found!"));
         existingUser.setName(user.getName());
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(passwordEncoder.encode(user.getPassword()));

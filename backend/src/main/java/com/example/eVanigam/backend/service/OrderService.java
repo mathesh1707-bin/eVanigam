@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.example.eVanigam.backend.exception.ApiException;
 import com.example.eVanigam.backend.model.CartItem;
 import com.example.eVanigam.backend.model.Order;
 import com.example.eVanigam.backend.model.OrderItem;
@@ -41,7 +42,7 @@ public class OrderService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         return userRepo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ApiException("User not found"));
     }
 
     public Order placeOrder() {
@@ -50,7 +51,7 @@ public class OrderService {
         List<CartItem> cartItems = cartRepo.findByUser(user);
 
         if (cartItems.isEmpty()) {
-            throw new RuntimeException("Cart is empty");
+            throw new ApiException("Cart is empty");
         }
 
         Order order = new Order();
@@ -65,10 +66,9 @@ public class OrderService {
             Product product = cartItem.getProduct();
 
             if (cartItem.getQuantity() > product.getStock()) {
-                throw new RuntimeException(product.getName() + " does not have enough stock");
+                throw new ApiException(product.getName() + " does not have enough stock");
             }
 
-            // Reduce and persist stock
             product.setStock(product.getStock() - cartItem.getQuantity());
             productRepo.save(product);
 
@@ -99,17 +99,21 @@ public class OrderService {
 
     public Order getOrderById(Long orderId) {
         User user = getAuthenticatedUser();
+
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ApiException("Order not found"));
+
         if (!order.getUser().getEmail().equals(user.getEmail())) {
-            throw new RuntimeException("Unauthorized access");
+            throw new ApiException("Unauthorized access");
         }
+
         return order;
     }
 
     public Order updateStatus(Long orderId, String status) {
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ApiException("Order not found"));
+
         order.setStatus(status);
         return orderRepo.save(order);
     }
