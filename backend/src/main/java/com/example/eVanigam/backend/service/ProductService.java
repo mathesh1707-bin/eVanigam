@@ -4,15 +4,18 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.eVanigam.backend.exception.ApiException;
 import com.example.eVanigam.backend.model.Product;
+import com.example.eVanigam.backend.repository.CartItemRepository;
 import com.example.eVanigam.backend.repository.ProductRepository;
 
 @Service
 public class ProductService {
     
     private ProductRepository repo;
-
-    public ProductService(ProductRepository repo) {
+    private CartItemRepository cartItemRepo;
+    public ProductService(ProductRepository repo,CartItemRepository cartItemRepo) {
+        this.cartItemRepo = cartItemRepo;
         this.repo = repo;
     }
 
@@ -29,9 +32,17 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
     
-    public void deleteProduct(Long id) {
-        repo.deleteById(id);
+    public void deleteProduct(Long productId) {
+    Product product = repo.findById(productId)
+            .orElseThrow(() -> new ApiException("Product not found"));
+
+    // Check if product is in any cart
+    if (!cartItemRepo.findByProduct(product).isEmpty()) {
+        throw new ApiException("Cannot delete product — it exists in one or more carts");
     }
+
+    repo.deleteById(productId);
+}
 
     public Product updateProduct(Long id, Product product) {
         Product existing = repo.findById(id)

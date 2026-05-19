@@ -11,7 +11,7 @@ import com.example.eVanigam.backend.model.User;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     List<CartItem> findByUser(User user);
-
+    List<CartItem> findByProduct(Product product);
     Optional<CartItem> findByUserAndProduct(User user, Product product);
     
 }
