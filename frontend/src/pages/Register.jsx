@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Auth.css'
 
-const API = 'http://localhost:8080'
+const API = 'http://localhost:5050'
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'USER' })

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Auth.css'
 
-const API = 'http://localhost:8080'
+const API = 'http://localhost:5050'
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' })

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import ProductCard from '../components/ProductCard'
 import './Home.css'
 
-const API = 'http://localhost:8080'
+const API = 'http://localhost:5050'
 
 const CATEGORIES = ['Electronics', 'Fashion', 'Home & Kitchen', 'Sports', 'Books']
 

@@ -6,7 +6,7 @@ import './Navbar.css'
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth()
-  const { count } = useCart()
+  const { count, clearCart } = useCart()        // ← add clearCart
   const navigate = useNavigate()
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
@@ -19,7 +19,7 @@ export default function Navbar() {
   }, [])
 
   const handleLogout = () => {
-    logout()
+    logout(clearCart)                            // ← pass clearCart
     navigate('/')
   }
 

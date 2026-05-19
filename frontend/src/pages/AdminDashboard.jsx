@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import './AdminDashboard.css'
 
-const API = 'http://localhost:8080'
+const API = 'http://localhost:5050'
 const EMPTY_FORM = { name: '', description: '', price: '', imageUrl: '', stock: '', category: '' }
 const CATEGORIES = ['Electronics', 'Fashion', 'Home & Kitchen', 'Sports', 'Books']
 

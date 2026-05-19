@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import './Products.css'
 
-const API = 'http://localhost:8080'
+const API = 'http://localhost:5050'
 const CATEGORIES = ['All', 'Electronics', 'Fashion', 'Home & Kitchen', 'Sports', 'Books']
 
 export default function Products() {

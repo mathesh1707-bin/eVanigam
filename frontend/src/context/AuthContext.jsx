@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useCart } from './CartContext'
 
 const AuthContext = createContext(null)
 
@@ -22,11 +23,12 @@ export function AuthProvider({ children }) {
     localStorage.setItem('user', JSON.stringify(userData))
   }
 
-  const logout = () => {
+  const logout = (clearCart) => {
     setUser(null)
     setToken(null)
     localStorage.removeItem('token')
     localStorage.removeItem('user')
+    clearCart()  // ← clear cart on logout
   }
 
   return (

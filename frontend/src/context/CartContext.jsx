@@ -1,29 +1,82 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const CartContext = createContext(null)
+const API = 'http://localhost:5050'
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([])
 
-  const addToCart = (product) => {
-    setItems(prev => {
-      const existing = prev.find(i => i.productId === product.productId)
-      if (existing) {
-        return prev.map(i =>
-          i.productId === product.productId ? { ...i, qty: i.qty + 1 } : i
-        )
+  // Fetch cart from backend on load
+  const fetchCart = async (token) => {
+    if (!token) { setItems([]); return }
+    try {
+      const res = await fetch(`${API}/cart`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (res.ok) {
+        const data = await res.json()
+        // Backend returns CartItemDTOs — map to local format
+        setItems(data.map(item => ({
+          cartItemId: item.cartItemId,
+          productId: item.product.productId,
+          name: item.product.name,
+          price: item.product.price,
+          imageUrl: item.product.imageUrl,
+          category: item.product.category,
+          qty: item.quantity,
+          itemTotal: item.itemTotal
+        })))
       }
-      return [...prev, { ...product, qty: 1 }]
-    })
+    } catch (err) {
+      console.error('Failed to fetch cart', err)
+    }
   }
 
-  const removeFromCart = (productId) => {
-    setItems(prev => prev.filter(i => i.productId !== productId))
+  // Load cart on mount if token exists
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) fetchCart(token)
+  }, [])
+
+  const addToCart = async (product) => {
+    const token = localStorage.getItem('token')
+    if (!token) { alert('Please login to add items to cart'); return }
+    try {
+      await fetch(`${API}/cart/add/${product.productId}?quantity=1`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      fetchCart(token)  // refresh from backend
+    } catch (err) {
+      console.error('Failed to add to cart', err)
+    }
   }
 
-  const updateQty = (productId, qty) => {
-    if (qty <= 0) return removeFromCart(productId)
-    setItems(prev => prev.map(i => i.productId === productId ? { ...i, qty } : i))
+  const removeFromCart = async (cartItemId) => {
+    const token = localStorage.getItem('token')
+    try {
+      await fetch(`${API}/cart/${cartItemId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      fetchCart(token)
+    } catch (err) {
+      console.error('Failed to remove from cart', err)
+    }
+  }
+
+  const updateQty = async (cartItemId, qty) => {
+    const token = localStorage.getItem('token')
+    if (qty <= 0) { removeFromCart(cartItemId); return }
+    try {
+      await fetch(`${API}/cart/update/${cartItemId}?quantity=${qty}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      fetchCart(token)
+    } catch (err) {
+      console.error('Failed to update qty', err)
+    }
   }
 
   const clearCart = () => setItems([])
@@ -32,7 +85,7 @@ export function CartProvider({ children }) {
   const count = items.reduce((sum, i) => sum + i.qty, 0)
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQty, clearCart, total, count }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQty, clearCart, fetchCart, total, count }}>
       {children}
     </CartContext.Provider>
   )
