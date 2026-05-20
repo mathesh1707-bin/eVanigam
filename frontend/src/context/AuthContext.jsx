@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { useCart } from './CartContext'
 
 const AuthContext = createContext(null)
 
@@ -8,27 +7,22 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null)
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token')
-    const storedUser = localStorage.getItem('user')
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setUser(JSON.parse(storedUser))
-    }
+    const t = localStorage.getItem('token')
+    const u = localStorage.getItem('user')
+    if (t && u) { setToken(t); setUser(JSON.parse(u)) }
   }, [])
 
   const login = (userData, jwt) => {
-    setUser(userData)
-    setToken(jwt)
+    setUser(userData); setToken(jwt)
     localStorage.setItem('token', jwt)
     localStorage.setItem('user', JSON.stringify(userData))
   }
 
   const logout = (clearCart) => {
-    setUser(null)
-    setToken(null)
+    setUser(null); setToken(null)
     localStorage.removeItem('token')
     localStorage.removeItem('user')
-    clearCart()  // ← clear cart on logout
+    if (clearCart) clearCart()
   }
 
   return (

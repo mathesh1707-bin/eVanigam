@@ -2,6 +2,7 @@ package com.example.eVanigam.backend.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,7 @@ import com.example.eVanigam.backend.dto.CartItemDTO;
 import com.example.eVanigam.backend.dto.DtoMapper;
 import com.example.eVanigam.backend.model.CartItem;
 import com.example.eVanigam.backend.service.CartItemService;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/cart")
 public class CartItemController {

@@ -5,17 +5,14 @@ const API = 'http://localhost:5050'
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  // Fetch cart from backend on load
   const fetchCart = async (token) => {
     if (!token) { setItems([]); return }
     try {
-      const res = await fetch(`${API}/cart`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const res = await fetch(`${API}/cart`, { headers: { Authorization: `Bearer ${token}` } })
       if (res.ok) {
         const data = await res.json()
-        // Backend returns CartItemDTOs — map to local format
         setItems(data.map(item => ({
           cartItemId: item.cartItemId,
           productId: item.product.productId,
@@ -27,12 +24,9 @@ export function CartProvider({ children }) {
           itemTotal: item.itemTotal
         })))
       }
-    } catch (err) {
-      console.error('Failed to fetch cart', err)
-    }
+    } catch (e) { console.error(e) }
   }
 
-  // Load cart on mount if token exists
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) fetchCart(token)
@@ -41,28 +35,24 @@ export function CartProvider({ children }) {
   const addToCart = async (product) => {
     const token = localStorage.getItem('token')
     if (!token) { alert('Please login to add items to cart'); return }
+    setLoading(true)
     try {
       await fetch(`${API}/cart/add/${product.productId}?quantity=1`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
+        method: 'POST', headers: { Authorization: `Bearer ${token}` }
       })
-      fetchCart(token)  // refresh from backend
-    } catch (err) {
-      console.error('Failed to add to cart', err)
-    }
+      await fetchCart(token)
+    } catch (e) { console.error(e) }
+    setLoading(false)
   }
 
   const removeFromCart = async (cartItemId) => {
     const token = localStorage.getItem('token')
     try {
       await fetch(`${API}/cart/${cartItemId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
       })
-      fetchCart(token)
-    } catch (err) {
-      console.error('Failed to remove from cart', err)
-    }
+      await fetchCart(token)
+    } catch (e) { console.error(e) }
   }
 
   const updateQty = async (cartItemId, qty) => {
@@ -70,22 +60,18 @@ export function CartProvider({ children }) {
     if (qty <= 0) { removeFromCart(cartItemId); return }
     try {
       await fetch(`${API}/cart/update/${cartItemId}?quantity=${qty}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
+        method: 'POST', headers: { Authorization: `Bearer ${token}` }
       })
-      fetchCart(token)
-    } catch (err) {
-      console.error('Failed to update qty', err)
-    }
+      await fetchCart(token)
+    } catch (e) { console.error(e) }
   }
 
   const clearCart = () => setItems([])
-
-  const total = items.reduce((sum, i) => sum + i.price * i.qty, 0)
-  const count = items.reduce((sum, i) => sum + i.qty, 0)
+  const total = items.reduce((s, i) => s + i.price * i.qty, 0)
+  const count = items.reduce((s, i) => s + i.qty, 0)
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQty, clearCart, fetchCart, total, count }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQty, clearCart, fetchCart, total, count, loading }}>
       {children}
     </CartContext.Provider>
   )
